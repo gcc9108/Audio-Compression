@@ -35,26 +35,18 @@ int main(int argc, char **argv)
 
     printf("Subchunk size : %d\n" , header-> datachunk_size );
     unsigned int i;
-    unsigned int data_length = header->datachunk_size;
+    unsigned int data_length = header->datachunk_size / 2;
 
     uint16_t mask = 0x1000;
-    short int sample[1];
-    sample[0] = 0x2E9B;
+    // printf("Sample 0:        %d\n", sample[0]);
 
-    // ulaw(&sample, 10);
-    printf("Sample 0:        %d\n", sample[0]);
-    ulaw(sample, 1);
-    // print8bitToOutput(MuLaw_Encode(sample));
-    // printf("Size of INT16 is %zu\n", sizeof(int16_t) );
-    // printf("Size of INT8 is %zu\n", sizeof(int8_t) );
     // for(i = 0; i < header->datachunk_size/2; i++){
     //     printf("#%d:        %d\n", i, samples[i]);
-    //     printf("Encoded Sample = :        %d\n", MuLaw_Encode(samples[i]) );
     // }
-    printf("Size of i is %d\n", i );
+    printf("Size of i is %d\n", header->datachunk_size/2 );
 
-    // wavcompress("output-mu.wav", samples); //Write result to output 
-    // wavwriteMu("track-mu.wav", samples);
+    wavcompress("output-mu.wav", samples); //Write result to output 
+    // wavwrite("output-mu.wav", samples);
 
 
     free(header);

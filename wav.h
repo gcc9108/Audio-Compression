@@ -44,5 +44,7 @@ short int pwlog2(short int x);
 
 int16_t MuLaw_Decode(int8_t number);
 
-void ulaw(short *sample, const int count);
+void ulaw(int16_t *samples,  int8_t *output);
+
+void printBits(short num, char *type);
 
