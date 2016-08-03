@@ -238,7 +238,6 @@ int main(int argc, char const *argv[])
 		timeval_print(&tvBegin);
 		for(i = sample_number; i > 0; i--){
 			sample = *sample_pointer;
-
 			// if(sample_number - i < 50){
 			// 	printf("Sample [%d] = %d\n", sample_number - i, sample);
 			// }
