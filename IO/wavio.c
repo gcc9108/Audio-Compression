@@ -242,7 +242,7 @@ void lin2mu_encode(int16_t* input_samples, uint8_t* output_samples, uint32_t sam
 			magnitude = 32767;
 		// x = 1 + mu * magnitude; mu == 255
 		x = (((magnitude << 8) - magnitude) >> 15) + 1; // No rounding
-		// result = (fpwlog2(x) * 15.875 );// << 4; // result = 1/8 * log_2(1 + mu * x) * 127.0
+		// result = 1/8 * log_2(1 + mu * x) * 127.0
 		result = (pwlog2(x << 8) >> 4);		
 		// if(result > 127){
 		// 	printf("Overflow detected\n");
