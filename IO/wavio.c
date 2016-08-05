@@ -159,6 +159,29 @@ void flin2mu_encode(int16_t* input_samples, uint8_t* output_samples, uint32_t sa
 	}
 }
 
+// uint16_t pwlog2(uint16_t X)
+// {
+// 	if(X < (1 << 8))
+// 		return (-1);
+// 	if(X < (1 << 9))
+// 		return (X- (1 << 8));
+// 	if(X < (1 << 10))
+// 		return (X >> 9);
+// 	if(X < (1 << 11))
+// 		return ((X >> 10) + (1 << 8));
+// 	if(X < (1 << 12))
+// 		return ((X >> 11) + (1 << 9));
+// 	if(X < (1 << 13))
+// 		return ((X >> 12) + 768);
+// 	if(X < (1 << 14))
+// 		return ((X >> 13) + (1 << 10));
+// 	if(X < (1 << 15))
+// 		return ((X >> 14) + 1280);
+// 	if(X < (1 << 16))
+// 		return ((X >> 15) + 1536);
+// 	return (-1); // It should never reach this point
+// }
+
 uint16_t pwlog2(uint16_t X)
 {
 	if(X < (1 << 8))
@@ -166,19 +189,19 @@ uint16_t pwlog2(uint16_t X)
 	if(X < (1 << 9))
 		return (X- (1 << 8));
 	if(X < (1 << 10))
-		return (X >> 9);
+		return (X >> 1);
 	if(X < (1 << 11))
-		return ((X >> 10) + (1 << 8));
+		return ((X >> 2) + (1 << 8));
 	if(X < (1 << 12))
-		return ((X >> 11) + (1 << 9));
+		return ((X >> 3) + (1 << 9));
 	if(X < (1 << 13))
-		return ((X >> 12) + 768);
+		return ((X >> 4) + 768);
 	if(X < (1 << 14))
-		return ((X >> 13) + (1 << 10));
+		return ((X >> 5) + (1 << 10));
 	if(X < (1 << 15))
-		return ((X >> 14) + 1280);
+		return ((X >> 6) + 1280);
 	if(X < (1 << 16))
-		return ((X >> 15) + 1536);
+		return ((X >> 7) + 1536);
 	return (-1); // It should never reach this point
 }
 
@@ -238,12 +261,19 @@ void lin2mu_encode(int16_t* input_samples, uint8_t* output_samples, uint32_t sam
 		sample = *input_sample_pointer;
 		sign_bit = (((uint16_t)sample) >> 15) << 7;
 		magnitude = (sign_bit)? -sample: sample;
+		// if(magnitude > 32767){
+		// 	printf("Overflow detected: %d\n", magnitude);
+		// 	magnitude = 32767;
+		// }
 		if(magnitude > 32767)
-			magnitude = 32767;
+			magnitude -= 1;
 		// x = 1 + mu * magnitude; mu == 255
 		x = (((magnitude << 8) - magnitude) >> 15) + 1; // No rounding
 		// result = 1/8 * log_2(1 + mu * x) * 127.0
-		result = (pwlog2(x << 8) >> 4);		
+		result = (pwlog2(x << 8) >> 4);	
+		// result = fpwlog2(x) * 15.875;
+		// printf("Result = %d : %d\n", result, (pwlog2(x << 8) >> 8));
+		// printf("Pwlog2(%d) f: %f d: %d\n", x, fpwlog2(x), (pwlog2(x << 8) >> 8) + 1);
 		// if(result > 127){
 		// 	printf("Overflow detected\n");
 		// 	result = 127;
